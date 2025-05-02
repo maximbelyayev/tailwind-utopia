@@ -1,3 +1,4 @@
+// index.js
 const plugin = require('tailwindcss/plugin')
 const text = require('./lib/text')
 const spacing = require('./lib/spacing')
@@ -7,51 +8,74 @@ const defaultOptions = {
 }
 
 module.exports = plugin.withOptions(function (options) {
-  options = Object.assign({}, defaultOptions, options)
+  options = { ...defaultOptions, ...options }
 
-  return function ({ addBase, theme }) {
+  return function ({ addBase, addUtilities, theme }) {
     const { minWidth, maxWidth } = theme('utopia')
 
     addBase({
       ':root': {
         '--fluid-min-width': minWidth.toString(),
         '--fluid-max-width': maxWidth.toString(),
-
         '--fluid-screen': '100vw',
         '--fluid-bp': `calc(
           (var(--fluid-screen) - var(--fluid-min-width) / 16 * 1rem) /
           (var(--fluid-max-width) - var(--fluid-min-width))
-        )`
+        )`,
+
+        ...text.customProperties(theme, options),
+
       },
 
       [`@media (min-width: ${maxWidth}px)`]: {
         ':root': {
-          '--fluid-screen': 'calc(var(--fluid-max-width) * 1px)'
+          '--fluid-screen': `calc(${maxWidth} * 1px)`
         }
       }
     })
+    
+    // Create custom font size utilities
+    const { fontSize } = theme('utopia')
+    const names = Object.keys(fontSize)
+    const textUtilities = Object.fromEntries(
+      names.map(name => {
 
-    addBase({ ':root': text.customProperties(theme, options) })
+        const lineHeightConfigValue = theme('utopia.fontSize')[name]
+        
+        return [
+          `.text-${options.prefix}${name}`, 
+          {
+            'font-size': `var(--f-${name})`,
+            'line-height': lineHeightConfigValue
+          }
+        ]
+      })
+    )
+    addUtilities(textUtilities)
   }
 }, function (options) {
-  options = Object.assign({}, defaultOptions, options)
+  options = { ...defaultOptions, ...options }
+  
+  const defaultTheme = {
+    utopia: {
+      minWidth: 320,
+      minSize: 21,
+      minScale: 1.2,
+      maxWidth: 1140,
+      maxSize: 24,
+      maxScale: 1.25,
+      spacing: { ...spacing.defaults },
+      fontSize: { ...text.defaults }
+    }
+  }
 
   return {
     theme: {
-      extend: {
-        fontSize: theme => text.sizes(theme, options),
-        spacing: theme => spacing.sizes(theme, options)
-      },
-      utopia: {
-        minWidth: 320,
-        minSize: 21,
-        minScale: 1.2,
-        maxWidth: 1140,
-        maxSize: 24,
-        maxScale: 1.25,
-        spacing: spacing.defaults,
-        fontSize: text.defaults
-      }
+        ...defaultTheme,
+        extend: {
+            // Remove fontSize from theme as we're now using addUtilities
+            spacing: theme => spacing.sizes(theme, options)
+        },
     }
   }
 })
