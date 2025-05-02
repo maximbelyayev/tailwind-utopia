@@ -3,7 +3,7 @@
 > Elegantly scale type and space without breakpoints \
 > [utopia.fyi](https://utopia.fyi)
 
-A TailwindCSS plugin that generates fluid font-size and spacing utilities:
+A TailwindCSSv4 plugin that generates fluid font-size and spacing utilities:
 
 ```html
 <h1 class="text-fl-3xl px-fl-2xs-md">Example</h1>
@@ -13,7 +13,7 @@ A TailwindCSS plugin that generates fluid font-size and spacing utilities:
 
 ## Installation
 ```
-npm install -D @domchristie/tailwind-utopia
+npm install -D @maximbelyayev/tailwind-utopia
 ```
 
 ## Getting Started
@@ -26,8 +26,12 @@ module.exports = {
       // ...
     }
   },
-  plugins: [require('@domchristie/tailwind-utopia')]
+  plugins: [require('@maximbelyayev/tailwind-utopia')]
 }
+```
+With Tailwind CSS v4.0 and higher, you may use the `@plugin` directive to load the config file in your CSS file.
+```
+@config '../path/to/tailwind.config.js';
 ```
 
 By default, this generates a fluid type scale and a fluid space scale with the same defaults as the Utopia calculators:
@@ -173,7 +177,7 @@ Apply configuration when calling the plugin in the Tailwind config:
 module.exports = {
   // …
   plugins: [
-    require('@domchristie/tailwind-utopia')({
+    require('@maximbelyayev/tailwind-utopia')({
       prefix: 'f-'
     })
   ]
@@ -190,5 +194,7 @@ Internally, the plugin needs to know which steps in your scale are negative and 
 Distributed under the MIT License. See `LICENSE` for more information.
 
 ## Acknowledgements
+Dom Christie for taking the original repo forward with his fork.
+
 Utopia: [James Gilyead](https://www.hustlersquad.net/) & [Trys Mudford](https://www.trysmudford.com/) \
 Original Tailwind Utopia plugin: [Chris Pymm](https://www.chrispymm.co.uk/) & [CWS Digital](https://cwsdigital.com/)
