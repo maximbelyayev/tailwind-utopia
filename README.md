@@ -3,7 +3,7 @@
 > Elegantly scale type and space without breakpoints \
 > [utopia.fyi](https://utopia.fyi)
 
-A TailwindCSSv4 plugin that generates fluid font-size and spacing utilities:
+A Tailwind CSS v4 plugin that generates fluid font-size and spacing utilities:
 
 ```html
 <h1 class="text-fl-3xl px-fl-2xs-md">Example</h1>
